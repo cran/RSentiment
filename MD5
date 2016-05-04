@@ -1,0 +1,14 @@
+bc93b744c9b7680bfc645f5dd8ebbfbd *DESCRIPTION
+6f0017ca1573c35615c7cc0255bdc604 *NAMESPACE
+fdb959da0967dacc71f139ab1a124ff5 *R/sysdata.rda
+bf298e2ac5879508d15c5600210ecb4e *R/test.R
+d5347a13c0b3baba46c1e262b00234b7 *build/vignette.rds
+9d1283b576bb9b275ec9ac7a4343ca86 *inst/doc/introduction.R
+3a69de87d8115ed6c8dfb49ea5d3e933 *inst/doc/introduction.Rmd
+da78ba6892265e78c74f894eb6da111e *inst/doc/introduction.html
+0681de3cf1469ca7f0a2dcec249bc4da *man/calculate_score.Rd
+6600d3e2c979f1da9a188d3734063c01 *man/calculate_sentiment.Rd
+734fbdb31e5a2a6df2fda221ca7bb8ec *man/calculate_total_presence_sentiment.Rd
+4b9bb01202bab5f447d637a98e9d8334 *tests/testthat.R
+af72566c14810ad954069c724ea919df *tests/testthat/testing.R
+3a69de87d8115ed6c8dfb49ea5d3e933 *vignettes/introduction.Rmd
