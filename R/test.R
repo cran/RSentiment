@@ -30,8 +30,20 @@ getpolarity <- function(sentences, negative_words,positive_words){
       return(-1)
     if(regexpr("[?]", sentence) > 0 )
       return(99)
-    #remove unnecessary characters and split up by word
+    if(grepl(":-(",sentence,fixed=TRUE))
+      sentence<-paste(sentence, "bad",sep=" ")
+    else if(grepl(":-)",sentence,fixed=TRUE)|| grepl(":)",sentence,fixed=TRUE))
+      sentence<-paste(sentence, "good",sep=" ")
+    else if(grepl(":-D",sentence,fixed=TRUE))
+      sentence<-paste(sentence, "very good",sep=" ")
+    else if(grepl(":-|",sentence,fixed=TRUE))
+      sentence<-paste(sentence, "indifferent",sep=" ")
+    else if(grepl(":-X",sentence,fixed=TRUE))
+      sentence<-paste(sentence, "very bad",sep=" ")
+    else
+      sentence<-paste(sentence, "",sep="")
     sentence<- iconv(sentence,"WINDOWS-1252","UTF-8")
+    #remove unnecessary characters and split up by word
     sentence <- gsub('[[:punct:]]', '', sentence)
     sentence <- gsub('[[:cntrl:]]', '', sentence)
     sentence <- gsub('\\d+', '', sentence)
@@ -74,10 +86,10 @@ getpolarity <- function(sentences, negative_words,positive_words){
   
   return(polaritys)
 }    
-
-#build tables of positive and negative sentences with polaritys
 negative_words<- iconv(negative_words,"WINDOWS-1252","UTF-8")
 positive_words<- iconv(positive_words,"WINDOWS-1252","UTF-8")
+
+#build tables of positive and negative sentences with polaritys
 negative_words <- tolower(negative_words)
 positive_words <- tolower(positive_words)
 
