@@ -1,4 +1,5 @@
 
+
 #' Calculate the score of sentences
 #'
 #' This function loads text and calculates score of each sentence on basis 
@@ -13,16 +14,220 @@
 #'calculate_score(c("This is good","This is bad"))
  
 #'@export 
+      
 
 
 calculate_score<-function(text){
+  
   text<-as.character(text)
   text <- unlist(lapply(text, function(x) { stringr::str_split(x, "\n") })) 
   
+  check_verb<-function(r2,words,df)
+  {
+    s<-100
+    if(grepl("R R V", r2)|grepl("V R V", r2) )
+    {
+      onlyVerb<-df[which(df$r1=='V'|df$r1=='M'),]
+      verbs<-onlyVerb$words
+      
+      positive.matches <-match(verbs, positive_words)
+      negative.matches <-match(verbs, negative_words)
+      # get the position of the matched term or NA
+      # we just want a TRUE/FALSE
+      positive_matches <-!is.na(positive.matches)
+      negative_matches <-!is.na(negative.matches)
+      score <-(sum(positive_matches) - sum(negative_matches))
+      df<-df[which(!df$r1=='V'& !df$r1=='M'),]
+      words<-df$words
+      r2<-paste(df$r1,collapse=" ")
+      
+      s<-check_adjectives_noun(r2,words,df)
+      
+      if(score<0)
+        s<-(-s)
+      
+      
+    }
+    return(s)
+    
+  }
   
+  check_adjectives_noun<-function(r2,words,df)
+  {
+    score<-0
+    if(grepl("R J", r2))
+    {
+      for (i in 1:nrow(df))
+      {
+        if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="J")
+        {
+          
+          negation.matches <-match(words[i], c("not"))
+          positive.matches <-match(df$words[i+1], positive_words)
+          negative.matches <-match(df$words[i+1], negative_words)
+          # get the position of the matched term or NA
+          # we just want a TRUE/FALSE
+          positive_matches <-!is.na(positive.matches)
+          negative_matches <-!is.na(negative.matches)
+          negation_matches <-!is.na(negation.matches)
+          
+          # final score
+          score <-(sum(positive_matches) - sum(negative_matches))
+          if(negation_matches>0)
+            score<-(-score)
+          
+          break;
+        }
+        
+      }
+      
+    }
+    if(grepl("R R J",r2))
+    {
+      #print("Entered")
+      for (i in 1:nrow(df))
+      {
+        if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="R" && substring(df$r1[i+2],1,1)=="J")
+        {
+          # print("Entered")
+          negation.matches <-match(words[i], c("not"))
+          positive.matches <-match(df$words[i+2], positive_words)
+          negative.matches <-match(df$words[i+2], negative_words)
+          # get the position of the matched term or NA
+          # we just want a TRUE/FALSE
+          positive_matches <-!is.na(positive.matches)
+          negative_matches <-!is.na(negative.matches)
+          negation_matches <-!is.na(negation.matches)
+          
+          # final score
+          score <-(sum(positive_matches) - sum(negative_matches))
+          
+          if(negation_matches>0)
+            score<-(-score)
+          
+          break;
+        }
+        
+      }
+      
+    }
+    if(grepl("R R R",r2))
+    {
+      #print("Entered")
+      for (i in 1:nrow(df))
+      {
+        if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="R" && substring(df$r1[i+2],1,1)=="R" )
+        {
+          #print("Entered")
+          negation.matches <-match(words[i], c("not"))
+          positive.matches <-match(df$words[i+2], positive_words)
+          negative.matches <-match(df$words[i+2], negative_words)
+          # get the position of the matched term or NA
+          # we just want a TRUE/FALSE
+          positive_matches <-!is.na(positive.matches)
+          negative_matches <-!is.na(negative.matches)
+          negation_matches <-!is.na(negation.matches)
+          
+          # final score
+          score <-(sum(positive_matches) - sum(negative_matches))
+          if(negation_matches>0)
+            score<-(-score)
+          
+          break;
+        }
+        
+      }
+      
+    }
+    if(grepl("R R", r2))
+    {
+      for (i in 1:nrow(df))
+      {
+        if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="R")
+        {
+          negation.matches <-match(words[i], c("not"))
+          positive.matches <-match(df$words[i+1], positive_words)
+          negative.matches <-match(df$words[i+1], negative_words)
+          # get the position of the matched term or NA
+          # we just want a TRUE/FALSE
+          positive_matches <-!is.na(positive.matches)
+          negative_matches <-!is.na(negative.matches)
+          negation_matches <-!is.na(negation.matches)
+          
+          # final score
+          score <-(sum(positive_matches) - sum(negative_matches))
+          if(negation_matches>0)
+            score<-(-score)
+          
+          break;
+        }
+        
+      }
+      
+    }
+    
+    if(grepl("V N", r2))
+    {
+      for (i in 1:nrow(df))
+      {
+        if(substring(df$r1[i],1,1)=="V" && substring(df$r1[i+1],1,1)=="N")
+        {
+          negation.matches <-match(words[i+1], c("none","nobody","nothing"))
+          positive.matches <-match(df$words[i+2], positive_words)
+          negative.matches <-match(df$words[i+2], negative_words)
+          # get the position of the matched term or NA
+          # we just want a TRUE/FALSE
+          positive_matches <-!is.na(positive.matches)
+          negative_matches <-!is.na(negative.matches)
+          negation_matches <-!is.na(negation.matches)
+          
+          # final score
+          score <-(sum(positive_matches) - sum(negative_matches))
+          if(negation_matches>0)
+            score<-(-score)
+          
+          break;
+        }
+        
+      }
+    }
+    return(score)
+  }
+  
+  #function to tag parts of speech of each sentence
+  POStag<-function(x,words)
+  {
+    type<-""    
+    sent_token_annotator <- openNLP::Maxent_Sent_Token_Annotator()
+    word_token_annotator <- openNLP:: Maxent_Word_Token_Annotator()
+    pos_tag_annotator <-  openNLP::Maxent_POS_Tag_Annotator()
+    y1 <- NLP::annotate(x, list(sent_token_annotator, word_token_annotator))
+    y2<- NLP::annotate(x, pos_tag_annotator, y1)
+    
+    y2w <- subset(y2, type=="word")
+    tags <- sapply(y2w$features, '[[', "POS")
+    r1 <- sprintf("%s",  tags)
+    for(i in 1 : length(r1))
+    {
+      r1[i]<-substring(r1[i],1,1)
+    }
+    df<-data.frame(r1,words)
+    df<-df[!df$r1=='D',]
+    words<-df$words
+    
+    r2 <- paste(df$r1, collapse = " ")
+    
+    score_adj<-check_adjectives_noun(r2,words,df)
+    score_verb<-check_verb(r2,words,df)
+    if(score_verb == 100)
+      return (score_adj)
+    else
+      return( score_verb)
+    
+  }
 #function to calculate number of words in each category within a sentence
 getpolarity <- function(sentences, negative_words,positive_words){
-  negation<-c("no","not")
+  negation<-c("no","not","none","nobody","nothing")
   polaritys <- plyr::laply(sentences, function(sentence, negative_words,positive_words){
     
     
@@ -42,8 +247,13 @@ getpolarity <- function(sentences, negative_words,positive_words){
       sentence<-paste(sentence, "very bad",sep=" ")
     else
       sentence<-paste(sentence, "",sep="")
+    
     sentence<- iconv(sentence,"WINDOWS-1252","UTF-8")
+    
+    
     #remove unnecessary characters and split up by word
+    trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+    sentence<-trim(sentence)
     sentence <- gsub('[[:punct:]]', '', sentence)
     sentence <- gsub('[[:cntrl:]]', '', sentence)
     sentence <- gsub('\\d+', '', sentence)
@@ -65,19 +275,12 @@ getpolarity <- function(sentences, negative_words,positive_words){
       score<-score+sum(very_matches)
     else
       score<-score-sum(very_matches)
+    
     negation.matches<-match(words,negation)
     negation_matches <- !is.na(negation.matches)
     
-    if(score>=0)
-    {
-      if(sum(negation_matches)>0)
-        score<-(-score)
-    }
-    else
-    {
-      if(sum(negation_matches)<0)
-        score<-(-score)
-    }
+    if(sum(negation_matches)>0)
+      score<-POStag(sentence,words)
     
     return(score)
     
@@ -86,6 +289,7 @@ getpolarity <- function(sentences, negative_words,positive_words){
   
   return(polaritys)
 }    
+
 negative_words<- iconv(negative_words,"WINDOWS-1252","UTF-8")
 positive_words<- iconv(positive_words,"WINDOWS-1252","UTF-8")
 
