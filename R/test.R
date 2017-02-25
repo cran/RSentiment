@@ -256,7 +256,6 @@ getpolarity <- function(sentences, negative_words,positive_words){
     sentence<-trim(sentence)
     sentence <- gsub('[[:punct:]]', '', sentence)
     sentence <- gsub('[[:cntrl:]]', '', sentence)
-    sentence <- gsub('\\d+', '', sentence)
     sentence <- tolower(sentence)
     wordList <- stringr::str_split(sentence, '\\s+')
     words <- unlist(wordList)
