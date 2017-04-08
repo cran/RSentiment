@@ -47,6 +47,7 @@ calculate_score<-function(text){
         s<-(-s)
       
       
+      
     }
     return(s)
     
@@ -211,6 +212,8 @@ calculate_score<-function(text){
     {
       r1[i]<-substring(r1[i],1,1)
     }
+   
+   
     df<-data.frame(r1,words)
     df<-df[!df$r1=='D',]
     words<-df$words
@@ -253,9 +256,12 @@ getpolarity <- function(sentences, negative_words,positive_words){
     
     #remove unnecessary characters and split up by word
     trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+    sentence<-gsub("n't"," not",sentence)
+    
     sentence<-trim(sentence)
     sentence <- gsub('[[:punct:]]', '', sentence)
     sentence <- gsub('[[:cntrl:]]', '', sentence)
+    sentence<-gsub("[[:punct:]]", "", iconv(sentence, to = "ASCII//TRANSLIT"))
     sentence <- tolower(sentence)
     wordList <- stringr::str_split(sentence, '\\s+')
     words <- unlist(wordList)

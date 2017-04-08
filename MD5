@@ -1,11 +1,11 @@
-3a3046674b12141a1935d1adffa0eb94 *DESCRIPTION
+4be5eb1d63e0ea22ee4280b0dbe36f09 *DESCRIPTION
 6f0017ca1573c35615c7cc0255bdc604 *NAMESPACE
 fdb959da0967dacc71f139ab1a124ff5 *R/sysdata.rda
-c55711ce461ce0afe2faaabcfdb9751e *R/test.R
+bc5e7b1b6e0d7383f22a30277102c480 *R/test.R
 af2c0feba54af1f2365626988da9e2ff *build/vignette.rds
 0155413e1ec4c8611a79c2034c988d21 *inst/doc/Introduction.R
 b6145cff94b44fb5a1010f5946f9237e *inst/doc/Introduction.Rmd
-fd9da326884d40b91136ef15e6ead9a7 *inst/doc/Introduction.html
+857af9806fad76680dc62cafc3b99eda *inst/doc/Introduction.html
 0681de3cf1469ca7f0a2dcec249bc4da *man/calculate_score.Rd
 6600d3e2c979f1da9a188d3734063c01 *man/calculate_sentiment.Rd
 734fbdb31e5a2a6df2fda221ca7bb8ec *man/calculate_total_presence_sentiment.Rd
