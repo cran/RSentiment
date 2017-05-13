@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-Sentiment analysis strategy on qualitative data can give valuable information and insights. Qualitative data are basically unstructured one, After applying sentiment analysis strategy, the quantitave feedback can be treated as structured one.Measuring the positivity or negativity of the quantitative feedback, qualitative data can be classified into vaious categories like "Positve", "Negative","Very Positive", "Very Negative" and "Sarcasm".This has been focussed in the package "RSentiment".
+Sentiment analysis strategy on qualitative data can give valuable information and insights. Qualitative data are basically unstructured one, After applying sentiment analysis strategy, the quantitave feedback can be treated as structured one.Measuring the positivity or negativity of the quantitative feedback, qualitative data can be classified into vaious categories like "Positve", "Negative","Very Positive" and "Very Negative".This has been focussed in the package "RSentiment".
 This package will ease mining opinions or analysing positive or negative sentiments of any subjective information in any source material in English.It uses text analysis, natural language processing, stemming etc and produces results. While computing score of any sentence, it takes into account sarcasms, negations, various degrees of adjectives and also emoticons.
 
 ## Methods

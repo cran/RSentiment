@@ -29,7 +29,6 @@ calculate_score<-function(text){
     {
       onlyVerb<-df[which(df$r1=='V'|df$r1=='M'),]
       verbs<-onlyVerb$words
-      
       positive.matches <-match(verbs, positive_words)
       negative.matches <-match(verbs, negative_words)
       # get the position of the matched term or NA
@@ -42,7 +41,6 @@ calculate_score<-function(text){
       r2<-paste(df$r1,collapse=" ")
       
       s<-check_adjectives_noun(r2,words,df)
-      
       if(score<0)
         s<-(-s)
       
@@ -56,6 +54,28 @@ calculate_score<-function(text){
   check_adjectives_noun<-function(r2,words,df)
   {
     score<-0
+    if(grepl("R", r2))
+    {
+      
+      
+      for (i in 1:nrow(df))
+      {
+        if(substring(df$r1[i],1,1)=="R")
+        {
+          negation.matches <-match(words[i], c("not","none","no","never"))
+          score<-(-1)
+          break
+        }
+        
+      }
+          
+          
+          
+          
+         
+      }
+      
+    
     if(grepl("R J", r2))
     {
       for (i in 1:nrow(df))
@@ -63,7 +83,7 @@ calculate_score<-function(text){
         if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="J")
         {
           
-          negation.matches <-match(words[i], c("not"))
+          negation.matches <-match(words[i],  c("not","none","no","never"))
           positive.matches <-match(df$words[i+1], positive_words)
           negative.matches <-match(df$words[i+1], negative_words)
           # get the position of the matched term or NA
@@ -91,7 +111,7 @@ calculate_score<-function(text){
         if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="R" && substring(df$r1[i+2],1,1)=="J")
         {
           # print("Entered")
-          negation.matches <-match(words[i], c("not"))
+          negation.matches <-match(words[i],  c("not","none","no","never"))
           positive.matches <-match(df$words[i+2], positive_words)
           negative.matches <-match(df$words[i+2], negative_words)
           # get the position of the matched term or NA
@@ -120,7 +140,7 @@ calculate_score<-function(text){
         if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="R" && substring(df$r1[i+2],1,1)=="R" )
         {
           #print("Entered")
-          negation.matches <-match(words[i], c("not"))
+          negation.matches <-match(words[i],  c("not","none","no","never"))
           positive.matches <-match(df$words[i+2], positive_words)
           negative.matches <-match(df$words[i+2], negative_words)
           # get the position of the matched term or NA
@@ -146,7 +166,7 @@ calculate_score<-function(text){
       {
         if(substring(df$r1[i],1,1)=="R" && substring(df$r1[i+1],1,1)=="R")
         {
-          negation.matches <-match(words[i], c("not"))
+          negation.matches <-match(words[i],  c("not","none","no","never"))
           positive.matches <-match(df$words[i+1], positive_words)
           negative.matches <-match(df$words[i+1], negative_words)
           # get the position of the matched term or NA
@@ -169,21 +189,38 @@ calculate_score<-function(text){
     
     if(grepl("V N", r2))
     {
+      
       for (i in 1:nrow(df))
       {
+        
         if(substring(df$r1[i],1,1)=="V" && substring(df$r1[i+1],1,1)=="N")
         {
           negation.matches <-match(words[i+1], c("none","nobody","nothing"))
-          positive.matches <-match(df$words[i+2], positive_words)
-          negative.matches <-match(df$words[i+2], negative_words)
+          positiveV.matches <-match(df$words[i], positive_words)
+          negativeV.matches <-match(df$words[i], negative_words)
+          
+          positiveN.matches <-match(df$words[i+1], positive_words)
+          negativeN.matches <-match(df$words[i+1], negative_words)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
-          positive_matches <-!is.na(positive.matches)
-          negative_matches <-!is.na(negative.matches)
+          positiveV_matches <-!is.na(positiveV.matches)
+          negativeV_matches <-!is.na(negativeV.matches)
           negation_matches <-!is.na(negation.matches)
+          positiveN_matches <-!is.na(positiveN.matches)
+          negativeN_matches <-!is.na(negativeN.matches)
           
           # final score
-          score <-(sum(positive_matches) - sum(negative_matches))
+          vscore <-(sum(positiveV_matches) - sum(negativeV_matches))
+          nscore <-(sum(positiveN_matches) - sum(negativeN_matches))
+          if(nscore==0)
+            score<-vscore
+          else
+          {
+          if(vscore<0)
+            score<-(-nscore)
+          else
+            score<-nscore
+          }
           if(negation_matches>0)
             score<-(-score)
           
@@ -217,11 +254,12 @@ calculate_score<-function(text){
     df<-data.frame(r1,words)
     df<-df[!df$r1=='D',]
     words<-df$words
-    
     r2 <- paste(df$r1, collapse = " ")
     
     score_adj<-check_adjectives_noun(r2,words,df)
+    
     score_verb<-check_verb(r2,words,df)
+    
     if(score_verb == 100)
       return (score_adj)
     else
@@ -230,7 +268,7 @@ calculate_score<-function(text){
   }
 #function to calculate number of words in each category within a sentence
 getpolarity <- function(sentences, negative_words,positive_words){
-  negation<-c("no","not","none","nobody","nothing")
+  negation<-c("no","not","none","nobody","nothing","never")
   polaritys <- plyr::laply(sentences, function(sentence, negative_words,positive_words){
     
     
@@ -256,6 +294,8 @@ getpolarity <- function(sentences, negative_words,positive_words){
     
     #remove unnecessary characters and split up by word
     trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+    
+    #n't is equivalent to not
     sentence<-gsub("n't"," not",sentence)
     
     sentence<-trim(sentence)
@@ -265,6 +305,7 @@ getpolarity <- function(sentences, negative_words,positive_words){
     sentence <- tolower(sentence)
     wordList <- stringr::str_split(sentence, '\\s+')
     words <- unlist(wordList)
+    
     #build vector with matches between sentence and each category
     positive.matches <-match(words, positive_words)
     negative.matches <-match(words, negative_words)
@@ -274,6 +315,7 @@ getpolarity <- function(sentences, negative_words,positive_words){
     negative_matches <-!is.na(negative.matches)
     # final score
     score <-sum(positive_matches) - sum(negative_matches)
+    
     very.matches<-match(words,c("very","most","more"))
     very_matches <- !is.na(very.matches)
     if(score>=0)
@@ -284,8 +326,10 @@ getpolarity <- function(sentences, negative_words,positive_words){
     negation.matches<-match(words,negation)
     negation_matches <- !is.na(negation.matches)
     
+   
     if(sum(negation_matches)>0)
       score<-POStag(sentence,words)
+    
     
     return(score)
     
@@ -331,13 +375,7 @@ sentiment<-c()
 
 for(i in 1 : length(res))
 {
-  if(res[i]==99)
-  {
-    sentiment[i]<-'Sarcasm'
-    
-  }
-  else
-  {
+  
     if(res[i]==0)
     {
       sentiment[i]<-'Neutral'
@@ -365,7 +403,7 @@ for(i in 1 : length(res))
     
     
     
-  }
+  
 }
 results<-data.frame(text,sentiment)
 return (results)
@@ -399,12 +437,10 @@ calculate_total_presence_sentiment<-function(text){
   {
     if(res[i]==99)
     {
-     
+      
       score_array[2,1]<-as.numeric(score_array[2,1])+1
     }
-    else
-    {
-      if(res[i]==0)
+      else if(res[i]==0)
       {
         
         score_array[2,2]<-as.numeric(score_array[2,2])+1
@@ -418,12 +454,11 @@ calculate_total_presence_sentiment<-function(text){
         
         score_array[2,4]<-as.numeric(score_array[2,4])+1
       }
-      else if (res[i]>1){
-        
-        score_array[2,6]<-as.numeric(score_array[2,6])+1
-        
-        
-      }
+    else if (res[i]>1){
+      
+      score_array[2,6]<-as.numeric(score_array[2,6])+1
+    }
+      
       else{
         
         score_array[2,5]<-as.numeric(score_array[2,5])+1
@@ -432,7 +467,7 @@ calculate_total_presence_sentiment<-function(text){
       
       
       
-    }
+    
   }
   
   return (score_array)
