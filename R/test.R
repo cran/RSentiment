@@ -293,7 +293,7 @@ calculate_score <- function(text) {
         
         
         if (is.na(sentence))
-          return(-1)
+          return(NA)
         
         #checking emoticons
         if (regexpr("[?]", sentence) > 0)
@@ -455,10 +455,10 @@ calculate_total_presence_sentiment <- function(text) {
   
   score_array <- array(0, dim = c(2, 6))
   score_array[1, 1] <- 'Sarcasm'
-  score_array[1, 2] <- 'Neutral'
-  score_array[1, 3] <- 'Negative'
-  score_array[1, 4] <- 'Positive'
-  score_array[1, 5] <- 'Very Negative'
+  score_array[1, 2] <- 'Negative'
+  score_array[1, 3] <- 'Very Negative'
+  score_array[1, 4] <- 'Neutral'
+  score_array[1, 5] <- 'Positive'
   score_array[1, 6] <- 'Very Positive'
   
   for (i in 1:length(res))
@@ -469,21 +469,21 @@ calculate_total_presence_sentiment <- function(text) {
     }
     else if (res[i] == 0)
     {
-      score_array[2, 2] <- as.numeric(score_array[2, 2]) + 1
+      score_array[2, 4] <- as.numeric(score_array[2, 4]) + 1
       
     }
     else if (res[i] == -1) {
-      score_array[2, 3] <- as.numeric(score_array[2, 3]) + 1
+      score_array[2, 2] <- as.numeric(score_array[2, 2]) + 1
     }
     else if (res[i] == 1) {
-      score_array[2, 4] <- as.numeric(score_array[2, 4]) + 1
+      score_array[2, 5] <- as.numeric(score_array[2, 5]) + 1
     }
     else if (res[i] > 1) {
       score_array[2, 6] <- as.numeric(score_array[2, 6]) + 1
     }
     
     else{
-      score_array[2, 5] <- as.numeric(score_array[2, 5]) + 1
+      score_array[2, 3] <- as.numeric(score_array[2, 3]) + 1
       
     }
     
