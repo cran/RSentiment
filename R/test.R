@@ -284,12 +284,14 @@ calculate_score <- function(text) {
   #function to calculate number of words in each category within a sentence
   getpolarity <- function(sentences,
                           negative_words,
-                          positive_words) {
+                          positive_words,count) {
     negation <- c("no", "not", "none", "nobody", "nothing", "never")
     polaritys <-
       plyr::laply(sentences, function(sentence,
                                       negative_words,
                                       positive_words) {
+        
+        count<-count+1
         
         
         if (is.na(sentence))
@@ -326,7 +328,8 @@ calculate_score <- function(text) {
         sentence <- trim(sentence)
         sentence <- gsub('[[:punct:]]', '', sentence)
         sentence <- gsub('[[:cntrl:]]', '', sentence)
-        sentence <-
+        sentence<-stringr::str_trim(sentence)
+        
         gsub("[[:punct:]]","",iconv(sentence, to = "ASCII//TRANSLIT"))
         sentence <- tolower(sentence)
         wordList <- stringr::str_split(sentence, '\\s+')
@@ -354,6 +357,8 @@ calculate_score <- function(text) {
         negation.matches <- match(words, negation)
         negation_matches <- !is.na(negation.matches)
         
+        print (paste("Processing sentence:", sentence, sep=" "))
+        
         
         if (sum(negation_matches) > 0)
           score <- POStag(sentence, words)
@@ -374,7 +379,9 @@ calculate_score <- function(text) {
   negative_words <- tolower(negative_words)
   positive_words <- tolower(positive_words)
   
-  res <- getpolarity(text, negative_words, positive_words)
+  count<-1
+  res <- getpolarity(text, negative_words, positive_words,count)
+
   return (res)
 }
 
