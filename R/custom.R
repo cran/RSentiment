@@ -1,27 +1,27 @@
-
-
-
 #' Calculate the score of sentences
 #'
 #' This function loads text and calculates score of each sentence on basis
-#' of presence of words of positive and negative sentiment, presence of negation,
-#' and checking for sarcasm. 0 indicates neutral sentiment. Positive value indicates
+#' of presence of words of positive and negative sentiment supplied externally as paramater, 
+#' presence of negation,and checking for sarcasm. 0 indicates neutral sentiment. Positive value indicates
 #' positive sentiment. Negative value indicates negative sentiment. 99 indicates
 #' sarcasm.
 #' @param text A vector of sentences or a sentence (English).
+#' @param positivewords A vector of words of positive sentiment.
+#' @param negativewords A vector of words of negative sentiment.
+
 #' @return A vector containing polarity of each sentence.
 #' @examples
-#'calculate_score("This is good")
-#'calculate_score(c("This is good","This is bad"))
+#'calculate_custom_score("This is good",c("good"),c("bad"))
+#'calculate_custom_score(c("This is good","This is bad"),c("good"),c("bad"))
 
 #'@export
 
 
 
-calculate_score <- function(text) {
+calculate_custom_score <- function(text,positivewords,negativewords) {
   
   text <- as.character(text)
- 
+  
   
   #split the text by newline
   # text <-unlist(lapply(text, function(x) {
@@ -35,7 +35,7 @@ calculate_score <- function(text) {
     {
       onlyVerb <- df[which(df$r1 == 'V' | df$r1 == 'M'), ]
       verbs <- onlyVerb$words
-      positive.matches <- match(verbs, positive_words)
+      positive.matches <- match(verbs, positivewords)
       negative.matches <- match(verbs, negative_words)
       # get the position of the matched term or NA
       # we just want a TRUE/FALSE
@@ -88,7 +88,7 @@ calculate_score <- function(text) {
             substring(df$r1[i + 1], 1, 1) == "J")
         {
           negation.matches <- match(words[i],  c("not", "none", "no", "never"))
-          positive.matches <- match(df$words[i + 1], positive_words)
+          positive.matches <- match(df$words[i + 1], positivewords)
           negative.matches <- match(df$words[i + 1], negative_words)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
@@ -120,7 +120,7 @@ calculate_score <- function(text) {
           # print("Entered")
           negation.matches <-
             match(words[i],  c("not", "none", "no", "never"))
-          positive.matches <- match(df$words[i + 2], positive_words)
+          positive.matches <- match(df$words[i + 2], positivewords)
           negative.matches <- match(df$words[i + 2], negative_words)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
@@ -153,7 +153,7 @@ calculate_score <- function(text) {
           #print("Entered")
           negation.matches <-
             match(words[i],  c("not", "none", "no", "never"))
-          positive.matches <- match(df$words[i + 2], positive_words)
+          positive.matches <- match(df$words[i + 2], positivewords)
           negative.matches <- match(df$words[i + 2], negative_words)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
@@ -181,7 +181,7 @@ calculate_score <- function(text) {
             substring(df$r1[i + 1], 1, 1) == "R")
         {
           negation.matches <- match(words[i],  c("not", "none", "no", "never"))
-          positive.matches <- match(df$words[i + 1], positive_words)
+          positive.matches <- match(df$words[i + 1], positivewords)
           negative.matches <- match(df$words[i + 1], negative_words)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
@@ -210,10 +210,10 @@ calculate_score <- function(text) {
             substring(df$r1[i + 1], 1, 1) == "N")
         {
           negation.matches <- match(words[i + 1], c("none", "nobody", "nothing"))
-          positiveV.matches <- match(df$words[i], positive_words)
+          positiveV.matches <- match(df$words[i], positivewords)
           negativeV.matches <- match(df$words[i], negative_words)
           
-          positiveN.matches <- match(df$words[i + 1], positive_words)
+          positiveN.matches <- match(df$words[i + 1], positivewords)
           negativeN.matches <- match(df$words[i + 1], negative_words)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
@@ -284,14 +284,14 @@ calculate_score <- function(text) {
   #function to calculate number of words in each category within a sentence
   getpolarity <- function(sentences,
                           negative_words,
-                          positive_words) {
+                          positivewords) {
     negation <- c("no", "not", "none", "nobody", "nothing", "never")
     polaritys <-
       plyr::laply(sentences, function(sentence,
                                       negative_words,
-                                      positive_words) {
+                                      positivewords) {
         
-
+        
         
         if (is.na(sentence))
           return(NA)
@@ -314,7 +314,7 @@ calculate_score <- function(text) {
           sentence <- paste(sentence, "", sep = "")
         
         
-       sentence <- iconv(sentence, "WINDOWS-1252", "UTF-8")
+        sentence <- iconv(sentence, "WINDOWS-1252", "UTF-8")
         
         #remove unnecessary characters and split up by word
         trim <- function (x)
@@ -338,7 +338,7 @@ calculate_score <- function(text) {
         words <- unlist(wordList)
         
         #build vector with matches between sentence and each category
-        positive.matches <- match(words, positive_words)
+        positive.matches <- match(words, positivewords)
         negative.matches <- match(words, negative_words)
         
         # get the position of the matched term or NA
@@ -369,20 +369,20 @@ calculate_score <- function(text) {
         return(score)
         
         
-      }, negative_words, positive_words)
+      }, negative_words, positivewords)
     
     return(polaritys)
   }
   
   negative_words <- iconv(negative_words, "WINDOWS-1252", "UTF-8")
-  positive_words <- iconv(positive_words, "WINDOWS-1252", "UTF-8")
+  positivewords <- iconv(positivewords, "WINDOWS-1252", "UTF-8")
   
   #build tables of positive and negative sentences with polaritys
   negative_words <- tolower(negative_words)
-  positive_words <- tolower(positive_words)
+  positivewords <- tolower(positivewords)
   
-  res <- getpolarity(text, negative_words, positive_words)
-
+  res <- getpolarity(text, negative_words, positivewords)
+  
   return (res)
 }
 
@@ -390,20 +390,22 @@ calculate_score <- function(text) {
 
 #' Predicts the sentiment of sentences
 #'
-#' This function loads text and calculates sentiment of each sentence. It classifies
+#' This function loads text and words of positive and negative sentiment supplied externally as paramater and calculates sentiment of each sentence. It classifies
 #' sentences into 6 categories: Positive, Negative, Very Positive, Very Negative
 #' Sarcasm and Neutral.
 #'
 #' @param text A vector of sentences or a sentence (English).
+#' @param positivewords A vector of words of positive sentiment.
+#' @param negativewords A vector of words of negative sentiment.
 #' @return A vector containing sentiment of each sentence.
 
 #' @examples
-#'calculate_sentiment("This is good")
-#'calculate_sentiment(c("This is good","This is bad"))
+#'calculate_custom_sentiment("This is good",c("good"),c("bad"))
+#'calculate_custom_sentiment(c("This is good","This is bad"),c("good"),c("bad"))
 #'@export
-calculate_sentiment <- function(text)
+calculate_custom_sentiment <- function(text,positivewords,negativewords)
 {
-  res <- calculate_score(text)
+  res <- calculate_custom_score(text,positivewords,negativewords)
   
   sentiment <- c()
   
@@ -448,17 +450,19 @@ calculate_sentiment <- function(text)
 }
 #' Calculate the number of sentences in each category of sentiment.
 #'
-#' This function loads text and calculates number of sentences which are positive,
+#' This function loads text and words of positive and negative sentiment supplied externally as paramater, and calculates number of sentences which are positive,
 #' negative, very positive, very negative, neutral and sarcasm.
 #'
 #' @param text A vector of sentences or a sentence (English).
+#' @param positivewords A vector of words of positive sentiment.
+#' @param negativewords A vector of words of negative sentiment.
 #' @return A 2-D matrix with two rows and 6 columns where first row contains the name of sentiment
 #' category and the second row contains the number in each category in string format.
 #' @examples
-#'calculate_total_presence_sentiment(c("This is good","This is bad"))
+#'calculate_custom_total_presence_sentiment(c("This is good","This is bad"),c("good"),c("bad"))
 #'@export
-calculate_total_presence_sentiment <- function(text) {
-  res <- calculate_score(text)
+calculate_custom_total_presence_sentiment <- function(text,positivewords, negativewords) {
+  res <- calculate_custom_score(text,positivewords, negativewords)
   
   
   score_array <- array(0, dim = c(2, 6))

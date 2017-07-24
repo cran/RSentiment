@@ -1,7 +1,7 @@
 Package: RSentiment
 Type: Package
 Title: Analyse Sentiment of English Sentences
-Version: 2.1.6
+Version: 2.2
 Imports: plyr,stringr,openNLP,NLP
 Date: 2017-7-20
 Author: Subhasree Bose <subhasree10.7@gmail.com> with contributons from Saptarsi Goswami.
@@ -17,6 +17,6 @@ RoxygenNote: 5.0.1
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-07-20 15:25:24 UTC; Subhasree
+Packaged: 2017-07-22 12:06:03 UTC; Subhasree
 Repository: CRAN
-Date/Publication: 2017-07-20 15:34:30 UTC
+Date/Publication: 2017-07-24 09:41:10 UTC
