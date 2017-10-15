@@ -36,7 +36,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
       onlyVerb <- df[which(df$r1 == 'V' | df$r1 == 'M'), ]
       verbs <- onlyVerb$words
       positive.matches <- match(verbs, positivewords)
-      negative.matches <- match(verbs, negative_words)
+      negative.matches <- match(verbs, negativewords)
       # get the position of the matched term or NA
       # we just want a TRUE/FALSE
       positive_matches <- !is.na(positive.matches)
@@ -89,7 +89,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         {
           negation.matches <- match(words[i],  c("not", "none", "no", "never"))
           positive.matches <- match(df$words[i + 1], positivewords)
-          negative.matches <- match(df$words[i + 1], negative_words)
+          negative.matches <- match(df$words[i + 1], negativewords)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
           positive_matches <- !is.na(positive.matches)
@@ -121,7 +121,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
           negation.matches <-
             match(words[i],  c("not", "none", "no", "never"))
           positive.matches <- match(df$words[i + 2], positivewords)
-          negative.matches <- match(df$words[i + 2], negative_words)
+          negative.matches <- match(df$words[i + 2], negativewords)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
           positive_matches <- !is.na(positive.matches)
@@ -154,7 +154,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
           negation.matches <-
             match(words[i],  c("not", "none", "no", "never"))
           positive.matches <- match(df$words[i + 2], positivewords)
-          negative.matches <- match(df$words[i + 2], negative_words)
+          negative.matches <- match(df$words[i + 2], negativewords)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
           positive_matches <- !is.na(positive.matches)
@@ -182,7 +182,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         {
           negation.matches <- match(words[i],  c("not", "none", "no", "never"))
           positive.matches <- match(df$words[i + 1], positivewords)
-          negative.matches <- match(df$words[i + 1], negative_words)
+          negative.matches <- match(df$words[i + 1], negativewords)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
           positive_matches <- !is.na(positive.matches)
@@ -211,10 +211,10 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         {
           negation.matches <- match(words[i + 1], c("none", "nobody", "nothing"))
           positiveV.matches <- match(df$words[i], positivewords)
-          negativeV.matches <- match(df$words[i], negative_words)
+          negativeV.matches <- match(df$words[i], negativewords)
           
           positiveN.matches <- match(df$words[i + 1], positivewords)
-          negativeN.matches <- match(df$words[i + 1], negative_words)
+          negativeN.matches <- match(df$words[i + 1], negativewords)
           # get the position of the matched term or NA
           # we just want a TRUE/FALSE
           positiveV_matches <- !is.na(positiveV.matches)
@@ -283,12 +283,12 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
   }
   #function to calculate number of words in each category within a sentence
   getpolarity <- function(sentences,
-                          negative_words,
+                          negativewords,
                           positivewords) {
     negation <- c("no", "not", "none", "nobody", "nothing", "never")
     polaritys <-
       plyr::laply(sentences, function(sentence,
-                                      negative_words,
+                                      negativewords,
                                       positivewords) {
         
         
@@ -339,7 +339,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         
         #build vector with matches between sentence and each category
         positive.matches <- match(words, positivewords)
-        negative.matches <- match(words, negative_words)
+        negative.matches <- match(words, negativewords)
         
         # get the position of the matched term or NA
         # we just want a TRUE/FALSE
@@ -369,19 +369,19 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         return(score)
         
         
-      }, negative_words, positivewords)
+      }, negativewords, positivewords)
     
     return(polaritys)
   }
   
-  negative_words <- iconv(negative_words, "WINDOWS-1252", "UTF-8")
+  negativewords <- iconv(negativewords, "WINDOWS-1252", "UTF-8")
   positivewords <- iconv(positivewords, "WINDOWS-1252", "UTF-8")
   
   #build tables of positive and negative sentences with polaritys
-  negative_words <- tolower(negative_words)
+  negativewords <- tolower(negativewords)
   positivewords <- tolower(positivewords)
-  
-  res <- getpolarity(text, negative_words, positivewords)
+ 
+  res <- getpolarity(text, negativewords, positivewords)
   
   return (res)
 }
