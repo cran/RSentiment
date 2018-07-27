@@ -8,26 +8,25 @@
 #' @param text A vector of sentences or a sentence (English).
 #' @param positivewords A vector of words of positive sentiment.
 #' @param negativewords A vector of words of negative sentiment.
-
+#' @param check A flag variable whose value if 1 denotes appending of passed positive and negative words with existing words.By
+#' default, this method will work with supplied positive and negative words only.
 #' @return A vector containing polarity of each sentence.
 #' @examples
-#'calculate_custom_score("This is good",c("good"),c("bad"))
-#'calculate_custom_score(c("This is good","This is bad"),c("good"),c("bad"))
+#'calculate_custom_score("This is good",c("good"),c("bad"),1)
+#'calculate_custom_score(c("This is good","This is bad"),c("good"),c("bad"),0)
 
 #'@export
 
 
 
-calculate_custom_score <- function(text,positivewords,negativewords) {
+calculate_custom_score <- function(text,positivewords,negativewords, check=0) {
   
   text <- as.character(text)
-  
-  
-  #split the text by newline
-  # text <-unlist(lapply(text, function(x) {
-  #     stringr::str_split(x, "\n")
-  #   }))
-  
+  if(check==1)
+  {
+    positivewords <-c(positivewords,positive_words)
+    negativewords <-c(negativewords,negative_words)
+  }
   check_verb <- function(r2, words, df)
   {
     s <- 100
@@ -49,9 +48,6 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
       s <- check_adjectives_noun(r2, words, df)
       if (score < 0)
         s <- (-s)
-      
-      
-      
     }
     return(s)
     
@@ -72,14 +68,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         }
         
       }
-      
-      
-      
-      
-      
     }
-    
-    
     if (grepl("R J", r2))
     {
       for (i in 1:nrow(df))
@@ -110,14 +99,13 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
     }
     if (grepl("R R J", r2))
     {
-      #print("Entered")
+      
       for (i in 1:nrow(df))
       {
         if (substring(df$r1[i], 1, 1) == "R" &&
             substring(df$r1[i + 1], 1, 1) == "R" &&
             substring(df$r1[i + 2], 1, 1) == "J")
         {
-          # print("Entered")
           negation.matches <-
             match(words[i],  c("not", "none", "no", "never"))
           positive.matches <- match(df$words[i + 2], positivewords)
@@ -143,14 +131,14 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
     }
     if (grepl("R R R", r2))
     {
-      #print("Entered")
+      
       for (i in 1:nrow(df))
       {
         if (substring(df$r1[i], 1, 1) == "R" &&
             substring(df$r1[i + 1], 1, 1) == "R" &&
             substring(df$r1[i + 2], 1, 1) == "R")
         {
-          #print("Entered")
+          
           negation.matches <-
             match(words[i],  c("not", "none", "no", "never"))
           positive.matches <- match(df$words[i + 2], positivewords)
@@ -287,9 +275,7 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
                           positivewords) {
     negation <- c("no", "not", "none", "nobody", "nothing", "never")
     polaritys <-
-      plyr::laply(sentences, function(sentence,
-                                      negativewords,
-                                      positivewords) {
+      plyr::laply(sentences, function(sentence,negativewords,positivewords) {
         
         
         
@@ -341,10 +327,12 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
         positive.matches <- match(words, positivewords)
         negative.matches <- match(words, negativewords)
         
+        
         # get the position of the matched term or NA
         # we just want a TRUE/FALSE
         positive_matches <- !is.na(positive.matches)
         negative_matches <- !is.na(negative.matches)
+        
         
         # final score
         score <- sum(positive_matches) - sum(negative_matches)
@@ -397,15 +385,17 @@ calculate_custom_score <- function(text,positivewords,negativewords) {
 #' @param text A vector of sentences or a sentence (English).
 #' @param positivewords A vector of words of positive sentiment.
 #' @param negativewords A vector of words of negative sentiment.
+#' @param check A flag variable whose value if 1 denotes appending of passed positive and negative words with existing words.By
+#' default, this method will work with supplied positive and negative words only.
 #' @return A vector containing sentiment of each sentence.
 
 #' @examples
-#'calculate_custom_sentiment("This is good",c("good"),c("bad"))
-#'calculate_custom_sentiment(c("This is good","This is bad"),c("good"),c("bad"))
+#'calculate_custom_sentiment("This is good",c("good"),c("bad"),1)
+#'calculate_custom_sentiment(c("This is good","This is bad"),c("good"),c("bad"),0)
 #'@export
-calculate_custom_sentiment <- function(text,positivewords,negativewords)
+calculate_custom_sentiment <- function(text,positivewords,negativewords,check=0)
 {
-  res <- calculate_custom_score(text,positivewords,negativewords)
+  res <- calculate_custom_score(text,positivewords,negativewords,check)
   
   sentiment <- c()
   
@@ -456,13 +446,15 @@ calculate_custom_sentiment <- function(text,positivewords,negativewords)
 #' @param text A vector of sentences or a sentence (English).
 #' @param positivewords A vector of words of positive sentiment.
 #' @param negativewords A vector of words of negative sentiment.
+#' @param check A flag variable whose value if 1 denotes appending of passed positive and negative words with existing words.By
+#' default, this method will work with supplied positive and negative words only.
 #' @return A 2-D matrix with two rows and 6 columns where first row contains the name of sentiment
 #' category and the second row contains the number in each category in string format.
 #' @examples
-#'calculate_custom_total_presence_sentiment(c("This is good","This is bad"),c("good"),c("bad"))
+#'calculate_custom_total_presence_sentiment(c("This is good","This is bad"),c("good"),c("bad"),0)
 #'@export
-calculate_custom_total_presence_sentiment <- function(text,positivewords, negativewords) {
-  res <- calculate_custom_score(text,positivewords, negativewords)
+calculate_custom_total_presence_sentiment <- function(text,positivewords, negativewords,check=0) {
+  res <- calculate_custom_score(text,positivewords, negativewords,check)
   
   
   score_array <- array(0, dim = c(2, 6))

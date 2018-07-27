@@ -4,7 +4,8 @@
 \alias{calculate_custom_total_presence_sentiment}
 \title{Calculate the number of sentences in each category of sentiment.}
 \usage{
-calculate_custom_total_presence_sentiment(text, positivewords, negativewords)
+calculate_custom_total_presence_sentiment(text, positivewords, negativewords,
+  check = 0)
 }
 \arguments{
 \item{text}{A vector of sentences or a sentence (English).}
@@ -12,6 +13,9 @@ calculate_custom_total_presence_sentiment(text, positivewords, negativewords)
 \item{positivewords}{A vector of words of positive sentiment.}
 
 \item{negativewords}{A vector of words of negative sentiment.}
+
+\item{check}{A flag variable whose value if 1 denotes appending of passed positive and negative words with existing words.By
+default, this method will work with supplied positive and negative words only.}
 }
 \value{
 A 2-D matrix with two rows and 6 columns where first row contains the name of sentiment
@@ -22,6 +26,6 @@ This function loads text and words of positive and negative sentiment supplied e
 negative, very positive, very negative, neutral and sarcasm.
 }
 \examples{
-calculate_custom_total_presence_sentiment(c("This is good","This is bad"),c("good"),c("bad"))
+calculate_custom_total_presence_sentiment(c("This is good","This is bad"),c("good"),c("bad"),0)
 }
 

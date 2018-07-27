@@ -4,7 +4,7 @@
 \alias{calculate_custom_score}
 \title{Calculate the score of sentences}
 \usage{
-calculate_custom_score(text, positivewords, negativewords)
+calculate_custom_score(text, positivewords, negativewords, check = 0)
 }
 \arguments{
 \item{text}{A vector of sentences or a sentence (English).}
@@ -12,6 +12,9 @@ calculate_custom_score(text, positivewords, negativewords)
 \item{positivewords}{A vector of words of positive sentiment.}
 
 \item{negativewords}{A vector of words of negative sentiment.}
+
+\item{check}{A flag variable whose value if 1 denotes appending of passed positive and negative words with existing words.By
+default, this method will work with supplied positive and negative words only.}
 }
 \value{
 A vector containing polarity of each sentence.
@@ -24,7 +27,7 @@ positive sentiment. Negative value indicates negative sentiment. 99 indicates
 sarcasm.
 }
 \examples{
-calculate_custom_score("This is good",c("good"),c("bad"))
-calculate_custom_score(c("This is good","This is bad"),c("good"),c("bad"))
+calculate_custom_score("This is good",c("good"),c("bad"),1)
+calculate_custom_score(c("This is good","This is bad"),c("good"),c("bad"),0)
 }
 

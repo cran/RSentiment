@@ -25,7 +25,7 @@ calculate_custom_score: calculates score of a sentence or a collection of senten
 
 Calculate_custom_sentiment:classifies a sentence or a text into a sentiment category on basis of dictionary of positive and negative words supplied by user
 
-calculate_custom_total_presence_sentiment:alculates total number of sentences in each sentiment category on basis of dictionary of positive and negative words supplied by user
+calculate_custom_total_presence_sentiment:alculates total number of sentences in each sentiment category on basis of dictionary of positive and negative words supplied by user. This method will either append the new words with present words of the package or will use only the words sent as parameter depending on the flag chosen.
 ```
 
 ## Score Range

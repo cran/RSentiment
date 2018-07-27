@@ -16,8 +16,6 @@
 
 #'@export
 
-
-
 calculate_score <- function(text) {
   
   text <- as.character(text)
